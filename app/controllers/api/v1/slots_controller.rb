@@ -9,9 +9,11 @@ module Api
       end
 
       def reserve
-        @slot.reserve(params.require(:slot).permit(:date))
-
-        head :ok
+        if @slot.reserve(params.require(:slot).permit(:date))
+          head(:ok)
+        else
+          render(json: { error: "slot already reserved" }, status: 422)
+        end
       end
 
       private

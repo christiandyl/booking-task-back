@@ -27,6 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_060720) do
     t.date "reserved_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["coach_id", "slot_id", "reserved_at"], name: "index_reserved_slots_on_coach_id_and_slot_id_and_reserved_at", unique: true
     t.index ["coach_id"], name: "index_reserved_slots_on_coach_id"
     t.index ["slot_id"], name: "index_reserved_slots_on_slot_id"
   end
@@ -39,6 +40,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_01_060720) do
     t.time "available_until", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["coach_id", "day_of_week", "available_at", "available_until"], name: "idx_on_coach_id_day_of_week_available_at_available__4c5904add5", unique: true
     t.index ["coach_id"], name: "index_slots_on_coach_id"
   end
 

@@ -8,5 +8,7 @@ class CreateSlots < ActiveRecord::Migration[7.1]
       t.time :available_until, null: false
       t.timestamps
     end
+
+    add_index :slots, [:coach_id, :day_of_week, :available_at, :available_until], unique: true
   end
 end

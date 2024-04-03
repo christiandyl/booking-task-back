@@ -19,7 +19,16 @@ class Coach < ApplicationRecord
 
     date = Date.parse(date_str)
 
-    filtered_slots = slots.includes(:coach).where("day_of_week = ?", Slot.day_of_weeks[date.strftime("%A").downcase])
+    local_time_start = ActiveSupport::TimeZone.new("UTC").parse("0:00 AM").in_time_zone(timezone)
+    # local_time_start = ActiveSupport::TimeZone.new(timezone).parse("0:00AM").in_time_zone("UTC")
+    # local_time_stop = ActiveSupport::TimeZone.new(timezone).parse("24:00PM").in_time_zone("UTC")
+
+    filtered_slots = slots.includes(:coach).where(
+      "day_of_week = ? AND available_at >= ?",
+      Slot.day_of_weeks[date.strftime("%A").downcase],
+      local_time_start,
+      # local_time_stop,
+    )
 
     booked_slots = reserved_slots.where("reserved_at > ?", Date.today)
 
@@ -32,10 +41,10 @@ class Coach < ApplicationRecord
         slot.id,
         reserved_slot.present?,
         slot.coach,
-        slot.timezone.in_time_zone(timezone),
+        slot.timezone,
         slot.day_of_week,
-        slot.available_at,
-        slot.available_until,
+        slot.available_at.in_time_zone(timezone).strftime('%Y-%m-%dT %H:%M:%S'),
+        slot.available_until.in_time_zone(timezone).strftime('%Y-%m-%dT %H:%M:%S'),
       )
     end
   end
